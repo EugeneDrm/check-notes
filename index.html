@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Ррррь Диез</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-size: 4em;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        button {
+            font-size: 1em;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .content {
+            width: 100%;
+            text-align: center;
+            margin-top: 1em;
+        }
+
+        .cell {
+            margin: 0.2em;
+        }
+    </style>
+</head>
+<body>
+<div class="content">
+    <span id="question" class="cell"></span>
+</div>
+<div class="content">
+    <span id="answer" class="cell"></span>
+</div>
+<div class="content">
+    <span id="answerLetters" class="cell"></span>
+</div>
+<div class="content">
+    <button id="next" onclick="onNext()"></button>
+</div>
+
+<script type="application/ecmascript">
+  const notes = [
+    {label: 'до', letter: 'С'},
+    {label: 'ре', letter: 'D'},
+    {label: 'ми', letter: 'E'},
+    {label: 'фа', letter: 'F'},
+    {label: 'соль', letter: 'G'},
+    {label: 'ля', letter: 'A'},
+    {label: 'си', letter: 'B'},
+  ];
+  const directions = ['→', '←'];
+  const shifts = [1, 2];
+
+  let answer = null;
+
+  function onNext() {
+    if (answer) {
+      document.getElementById('next').innerText = 'исчо';
+      document.getElementById('answer').innerText = answer.label;
+      document.getElementById('answerLetters').innerText = answer.letter;
+      answer = null;
+      return;
+    }
+
+    // question
+    document.getElementById('next').innerText = 'ривил';
+    const question = {
+      note: random.note(),
+      direction: random.direction(),
+      shift: random.shift(),
+    };
+    document.getElementById('question').innerText = `${question.note.label} (${question.note.letter}) ${question.shift} ${question.direction}`;
+
+    // answer
+    const shift = question.shift * (question.direction === directions[0] ? 1 : -1);
+    let noteIndex = notes.findIndex(x => x === question.note);
+
+    answer = {
+      label: '',
+      letter: '',
+    };
+    for (let i = 0; i < 7; i++) {
+      answer.label += notes[noteIndex].label + ' ';
+      answer.letter += notes[noteIndex].letter + ' ';
+      noteIndex = (noteIndex + shift + notes.length) % notes.length;
+    }
+    document.getElementById('answer').innerText = '';
+    document.getElementById('answerLetters').innerText = '';
+  }
+
+  const random = {
+    note: () => notes[getRandom(notes.length)],
+    direction: () => directions[getRandom(directions.length)],
+    shift: () => shifts[getRandom(shifts.length)],
+  }
+
+  function getRandom(n) {
+    return Math.floor(Math.random() * n);
+  }
+
+  onNext();
+</script>
+</body>
+</html>
